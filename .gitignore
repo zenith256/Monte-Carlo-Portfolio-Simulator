@@ -1,0 +1,16 @@
+# Vue / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# Python / FastAPI
+backend/__pycache__/
+backend/venv/
+backend/.env
+*.pyc
+
+# Jupyter / Checkpoints
+research/.ipynb_checkpoints/
+
+# OS Files
+.DS_Store
