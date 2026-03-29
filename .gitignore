@@ -5,7 +5,7 @@ frontend-dashboard/.env
 
 # Python / FastAPI
 backend-api/__pycache__/
-backend-api/venv/
+backend-api/.venv/
 backend-api/.env
 *.pyc
 
