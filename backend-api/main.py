@@ -1,12 +1,22 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+import os
 import numpy as np
 import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
 from typing import List
 from google import genai
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
+    raise ValueError("API Key not found. Please check your .env file.")
+
+client = genai.Client(api_key=API_KEY)
 
 app = FastAPI()
 
@@ -26,10 +36,6 @@ class SimulationRequest(BaseModel):
     time_horizon: int = 252
     risk_free_rate: float = 0.04
     seed: int = 42
-
-
-API_KEY = "AIzaSyDyaSD1kdbc-Z6rUZcJLfRjEB02zGosy2A"
-client = genai.Client(api_key=API_KEY)
 
 
 def get_ai_analysis(metrics, tickers, weights, corr_matrix):
