@@ -67,7 +67,7 @@ defineEmits(['initialize'])
         <h2 class="text-title-sm" style="margin-bottom: 4px;">03_RESOURCES</h2>
         <div style="font-size: 12px;">
           <span style="color: var(--text-dark);">Source: </span>
-          <a href="#" style="color: var(--text-main); text-decoration: underline; text-underline-offset: 4px;">
+          <a href="https://github.com/zenith256/Monte-Carlo-Portfolio-Simulator/tree/main/research" style="color: var(--text-main); text-decoration: underline; text-underline-offset: 4px;">
             view_jupyter_notebook.ipynb
           </a>
         </div>

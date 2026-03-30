@@ -10,17 +10,18 @@ from typing import List
 from google import genai
 from dotenv import load_dotenv
 import requests
+from tiingo import TiingoClient
 
 load_dotenv()
 API_KEY = os.getenv("GEMINI_API_KEY")
+TIINGO_KEY = os.getenv("TIINGO_API_KEY")
 
-if not API_KEY:
+if not API_KEY or not TIINGO_KEY:
     raise ValueError("API Key not found. Please check your .env file.")
 
 client = genai.Client(api_key=API_KEY)
 
 app = FastAPI()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -32,15 +33,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-"""
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-"""
 
 
 class SimulationRequest(BaseModel):
@@ -59,11 +51,10 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
     """
     current_date = datetime.now().strftime("%B %Y")
 
-    # 1. Format the data for the AI
+    # Format the data for the AI
     weight_desc = ", ".join([f"{t}: {w*100:.1f}%" for t, w in zip(tickers, weights)])
     corr_desc = corr_matrix.round(2).to_string()
 
-    # 2. Construct the high-authority prompt
     prompt = f"""
     Role: Senior Quantitative Risk Analyst at a Quantitative Hedge Fund.
     Current Date: {current_date}
@@ -89,13 +80,11 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
     """
 
     try:
-        # 3. Make the live API call
         response = client.models.generate_content(
             model="gemini-2.5-flash", contents=prompt
         )
         return response.text
     except Exception as e:
-        # Fail gracefully if the API is down or the key is invalid
         print(f"DEBUG: Gemini API Error - {e}")
         return "The AI Strategic Analysis is currently offline. Please check your API configuration."
 
@@ -103,7 +92,6 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
 @app.post("/simulate")
 async def simulate(req: SimulationRequest):
     try:
-        # 1. Setup & Validation
         weights = np.array(req.weights)
         if not np.isclose(weights.sum(), 1.0):
             raise HTTPException(status_code=400, detail="Weights must sum to 1.0")
@@ -112,53 +100,41 @@ async def simulate(req: SimulationRequest):
         end_date = datetime.now()
         start_date = end_date - timedelta(days=2 * 365)
 
-        raw_data = yf.download(
-            req.tickers,
-            start=start_date,
-            end=end_date,
-            auto_adjust=True,
-        )
+        try:
+            # Standardize tickers: Tiingo prefers 'BTC' over 'BTC-USD'
+            clean_tickers = [t.split("-")[0].upper() for t in req.tickers]
 
-        # Catch both empty data (no tickers) and completely NaN data (rate limited)
-        if raw_data.empty or raw_data.isna().all().all():
-            raise HTTPException(
-                status_code=400,
-                detail="Market data provider is currently rate-limiting requests or no data was found. Please wait a minute and try again.",
-            )
+            # Setup the official Tiingo client
+            config = {"api_key": TIINGO_KEY, "session": True}
+            client = TiingoClient(config)
 
-        # Handle Multi-Index Columns
-        if isinstance(raw_data.columns, pd.MultiIndex):
-            df = raw_data["Close"]
-        else:
-            df = raw_data[["Close"]]
+            # Fetch data - this returns a list of dictionaries
+            # Tiingo returns data ticker-by-ticker, so we combine them into one DataFrame
+            all_data = {}
+            for ticker in clean_tickers:
+                # fetch daily data for the last 2 years
+                ticker_data = client.get_ticker_price(
+                    ticker,
+                    fmt="json",
+                    startDate=start_date,
+                    endDate=end_date,
+                    frequency="daily",
+                )
 
-        # 1. Check if the entire request was blocked
-        if df.empty or df.isna().all().all():
-            raise HTTPException(
-                status_code=400,
-                detail="Yahoo Finance is completely blocking requests from this server IP. Please wait a moment.",
-            )
+                all_data[ticker] = pd.Series(
+                    {item["date"][:10]: item["adjClose"] for item in ticker_data}
+                )
 
-        # 2. Check if ANY single ticker was blocked (which breaks the portfolio weights)
-        if df.isna().all().any():
-            failed_tickers = df.columns[df.isna().all()].tolist()
-            raise HTTPException(
-                status_code=400,
-                detail=f"Yahoo Finance blocked or could not find data for: {failed_tickers}. Please wait or try different tickers.",
-            )
+            df = pd.DataFrame(all_data)
+            df = df.dropna()
+
+        except Exception as e:
+            print(f"TIINGO_FETCH_ERROR: {e}")
+            raise HTTPException(status_code=400, detail=f"Tiingo Error: {str(e)}")
 
         log_returns = np.log(df / df.shift(1)).dropna()
 
-        # 3. Final check before the math engine
-        if len(log_returns) < 50:
-            raise HTTPException(
-                status_code=400,
-                detail="Not enough historical trading days retrieved to run a statistically valid simulation.",
-            )
-
-        log_returns = np.log(df / df.shift(1)).dropna()
-
-        # 3. Math Engine (Your exact code)
+        # Math Engine (Your exact code)
         mu = log_returns.mean() * 252
         cov_matrix = log_returns.cov() * 252
         corr_matrix = log_returns.corr()
@@ -185,7 +161,7 @@ async def simulate(req: SimulationRequest):
 
         portfolio_paths = np.tensordot(prices, weights, axes=([1], [0]))
 
-        # 4. Analytics
+        # Analytics
         final_values = portfolio_paths[-1, :]
         portfolio_returns = final_values - 1.0
         expected_final_value = float(final_values.mean())
@@ -225,7 +201,7 @@ async def simulate(req: SimulationRequest):
         path_05 = np.percentile(portfolio_paths, 5, axis=1)
         random_paths = portfolio_paths[:, :200].T
 
-        # 5. Package Results
+        # Package Results
         metrics = {
             "expected_final_value": float(round(expected_final_value, 4)),
             "var_95": float(round(VaR_95 * 100, 2)),

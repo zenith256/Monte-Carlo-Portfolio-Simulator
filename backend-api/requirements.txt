@@ -7,3 +7,5 @@ yfinance
 google-genai
 python-dotenv
 requests
+tiingo
+

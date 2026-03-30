@@ -3,8 +3,8 @@ import { ref, computed } from 'vue'
 
 const emit = defineEmits(['execute'])
 
-const rawTickers = ref("QQQ, BTC-USD, TLT, GLD")
-const rawWeights = ref("0.4, 0.2, 0.2, 0.2")
+const rawTickers = ref("QQQ, TLT, BTC, GLD, SPY")
+const rawWeights = ref("0.2, 0.2, 0.2, 0.2, 0.2")
 const riskFreeRate = ref(0.04)
 
 const parsedTickers = computed(() => rawTickers.value.split(',').map(s => s.trim().toUpperCase()).filter(s => s !== ""))
