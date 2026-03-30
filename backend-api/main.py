@@ -251,6 +251,8 @@ async def simulate(req: SimulationRequest):
                 "all_paths": random_paths.tolist(),  # This is a list of 100 lists
             },
         }
+    except HTTPException as he:
+        raise he
 
     except Exception as e:
         print(f"CRASH ERROR: {e}")
