@@ -22,21 +22,6 @@ gemini_client = genai.Client(api_key=API_KEY)
 
 app = FastAPI()
 
-"""
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://monte-carlo-portfolio-simulator.vercel.app",
-        "https://monte-carlo-portfolio-simulator-git-main-zenith256s-projects.vercel.app",  # Vercel preview branch
-    ],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*"],
-)
-"""
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -149,18 +134,22 @@ async def simulate(req: SimulationRequest):
         mu = log_returns.mean() * 252
         cov_matrix = log_returns.cov() * 252
         corr_matrix = log_returns.corr()
-        L = np.linalg.cholesky(corr_matrix)
+        L = np.linalg.cholesky(corr_matrix).astype(np.float32)
 
         num_assets = len(req.tickers)
         days = req.time_horizon
         dt = 1 / 252
 
-        Z_indep = np.random.standard_normal((days, num_assets, req.simulations))
-        Z_corr = np.zeros_like(Z_indep)
+        Z_indep = np.random.standard_normal((days, num_assets, req.simulations)).astype(
+            np.float32
+        )
+        Z_corr = np.zeros_like(Z_indep, dtype=np.float32)
         for t in range(days):
             Z_corr[t] = L @ Z_indep[t]
 
-        prices = np.ones((days + 1, num_assets, req.simulations))
+        del Z_indep
+
+        prices = np.ones((days + 1, num_assets, req.simulations), dtype=np.float32)
         for i in range(num_assets):
             asset_mu = mu.iloc[i]
             asset_vol = np.sqrt(cov_matrix.iloc[i, i])
@@ -170,7 +159,10 @@ async def simulate(req: SimulationRequest):
             )
             prices[1:, i, :] = np.cumprod(growth_factors, axis=0)
 
+        del Z_corr
+
         portfolio_paths = np.tensordot(prices, weights, axes=([1], [0]))
+        del prices
 
         # Analytics
         final_values = portfolio_paths[-1, :]
