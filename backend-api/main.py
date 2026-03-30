@@ -112,19 +112,11 @@ async def simulate(req: SimulationRequest):
         end_date = datetime.now()
         start_date = end_date - timedelta(days=2 * 365)
 
-        session = requests.Session()
-        session.headers.update(
-            {
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            }
-        )
-
         raw_data = yf.download(
             req.tickers,
             start=start_date,
             end=end_date,
             auto_adjust=True,
-            session=session,
         )
 
         # Catch both empty data (no tickers) and completely NaN data (rate limited)
