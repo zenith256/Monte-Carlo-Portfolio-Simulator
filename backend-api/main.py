@@ -28,7 +28,7 @@ app.add_middleware(
         "http://127.0.0.1:5173",  # local Vue alternative
         "*",  # wildcard: allows Vercel to connect later
     ],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -226,7 +226,7 @@ async def simulate(req: SimulationRequest):
         return {
             "metrics": metrics,
             "ai_analysis": [ai_advice],
-            "chart_data": [float(x) for x in rep_path],
+            # "chart_data": [float(x) for x in rep_path],
             "histogram": {"bins": bins[:-1].tolist(), "counts": counts.tolist()},
             "chart_data": {
                 "representative_path": rep_path.tolist(),
