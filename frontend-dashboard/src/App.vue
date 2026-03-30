@@ -13,7 +13,7 @@ const handleExecute = async (payload) => {
   loading.value = true
   step.value = 'loading'
   try {
-    const response = await axios.post('http://127.0.0.1:8000/simulate', {
+    const response = await axios.post('https://monte-carlo-portfolio-simulator.onrender.com/simulate', {
       ...payload,
       simulations: 10000
     })
