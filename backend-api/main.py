@@ -19,7 +19,7 @@ TIINGO_KEY = os.getenv("TIINGO_API_KEY")
 if not API_KEY or not TIINGO_KEY:
     raise ValueError("API Key not found. Please check your .env file.")
 
-client = genai.Client(api_key=API_KEY)
+gemini_client = genai.Client(api_key=API_KEY)
 
 app = FastAPI()
 
@@ -92,7 +92,7 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
     """
 
     try:
-        response = client.models.generate_content(
+        response = gemini_client.models.generate_content(
             model="gemini-2.5-flash", contents=prompt
         )
         return response.text
@@ -118,14 +118,14 @@ async def simulate(req: SimulationRequest):
 
             # Setup the official Tiingo client
             config = {"api_key": TIINGO_KEY, "session": True}
-            client = TiingoClient(config)
+            tiingo_client = TiingoClient(config)
 
             # Fetch data - this returns a list of dictionaries
             # Tiingo returns data ticker-by-ticker, so we combine them into one DataFrame
             all_data = {}
             for ticker in clean_tickers:
                 # fetch daily data for the last 2 years
-                ticker_data = client.get_ticker_price(
+                ticker_data = tiingo_client.get_ticker_price(
                     ticker,
                     fmt="json",
                     startDate=start_date,
