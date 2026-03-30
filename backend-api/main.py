@@ -22,6 +22,8 @@ if not API_KEY or not TIINGO_KEY:
 client = genai.Client(api_key=API_KEY)
 
 app = FastAPI()
+
+"""
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -32,6 +34,15 @@ app.add_middleware(
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
+"""
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
