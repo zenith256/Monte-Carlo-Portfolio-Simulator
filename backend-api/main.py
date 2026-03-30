@@ -20,13 +20,26 @@ client = genai.Client(api_key=API_KEY)
 
 app = FastAPI()
 
-# Enable CORS for your Vue frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",  # local Vue app
+        "http://127.0.0.1:5173",  # local Vue alternative
+        "*",  # wildcard: allows Vercel to connect later
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+"""
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+"""
 
 
 class SimulationRequest(BaseModel):
