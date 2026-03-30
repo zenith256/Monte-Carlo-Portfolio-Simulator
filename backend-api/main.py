@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from typing import List
 from google import genai
 from dotenv import load_dotenv
+import requests
 
 load_dotenv()
 API_KEY = os.getenv("GEMINI_API_KEY")
@@ -111,13 +112,27 @@ async def simulate(req: SimulationRequest):
         end_date = datetime.now()
         start_date = end_date - timedelta(days=2 * 365)
 
-        # 2. Data Fetching
-        raw_data = yf.download(
-            req.tickers, start=start_date, end=end_date, auto_adjust=True
+        session = requests.Session()
+        session.headers.update(
+            {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
         )
 
-        if raw_data.empty:
-            raise HTTPException(status_code=400, detail="No data found for tickers")
+        raw_data = yf.download(
+            req.tickers,
+            start=start_date,
+            end=end_date,
+            auto_adjust=True,
+            session=session,
+        )
+
+        # Catch both empty data (no tickers) and completely NaN data (rate limited)
+        if raw_data.empty or raw_data.isna().all().all():
+            raise HTTPException(
+                status_code=400,
+                detail="Market data provider is currently rate-limiting requests or no data was found. Please wait a minute and try again.",
+            )
 
         # Handle Multi-Index Columns
         if isinstance(raw_data.columns, pd.MultiIndex):

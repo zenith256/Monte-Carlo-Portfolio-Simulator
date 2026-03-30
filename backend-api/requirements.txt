@@ -6,3 +6,4 @@ pandas
 yfinance
 google-genai
 python-dotenv
+requests
