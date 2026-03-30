@@ -15,7 +15,9 @@ const handleExecute = async (payload) => {
   try {
     const response = await axios.post('https://monte-carlo-portfolio-simulator.onrender.com/simulate', {
       ...payload,
-      simulations: 30000
+      simulations: 10000
+    }, {
+        timeout: 60000
     })
     resultsData.value = response.data 
     step.value = 'results'
