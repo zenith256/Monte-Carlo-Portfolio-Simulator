@@ -132,6 +132,30 @@ async def simulate(req: SimulationRequest):
         else:
             df = raw_data[["Close"]]
 
+        # 1. Check if the entire request was blocked
+        if df.empty or df.isna().all().all():
+            raise HTTPException(
+                status_code=400,
+                detail="Yahoo Finance is completely blocking requests from this server IP. Please wait a moment.",
+            )
+
+        # 2. Check if ANY single ticker was blocked (which breaks the portfolio weights)
+        if df.isna().all().any():
+            failed_tickers = df.columns[df.isna().all()].tolist()
+            raise HTTPException(
+                status_code=400,
+                detail=f"Yahoo Finance blocked or could not find data for: {failed_tickers}. Please wait or try different tickers.",
+            )
+
+        log_returns = np.log(df / df.shift(1)).dropna()
+
+        # 3. Final check before the math engine
+        if len(log_returns) < 50:
+            raise HTTPException(
+                status_code=400,
+                detail="Not enough historical trading days retrieved to run a statistically valid simulation.",
+            )
+
         log_returns = np.log(df / df.shift(1)).dropna()
 
         # 3. Math Engine (Your exact code)
