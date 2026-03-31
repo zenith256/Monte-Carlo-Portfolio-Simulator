@@ -36,7 +36,7 @@ const handleExecute = async (payload) => {
     console.log("FULL_ERROR_OBJECT:", error.response);
     step.value = 'input'
 
-    if (error.response && error.response.data) {
+    if (error.response && error.response.data && error.response.data.detail) {
       // This pulls exactly what we wrote in Python: "Unsupported ticker: 'VWRA'..."
       errorMessage.value = error.response.data.detail || "Server rejected request";
     } else {
