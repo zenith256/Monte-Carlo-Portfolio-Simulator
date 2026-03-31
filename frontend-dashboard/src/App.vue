@@ -9,9 +9,18 @@ const step = ref('boot')
 const resultsData = ref(null)
 const loading = ref(false)
 
+const loadingMessage = ref('> SIMULATING_OUTCOMES_IN_PARALLEL_UNIVERSES...')
+let loadingTimer = null
+
 const handleExecute = async (payload) => {
   loading.value = true
   step.value = 'loading'
+
+  loadingMessage.value = '> SIMULATING_OUTCOMES_IN_PARALLEL_UNIVERSES...'
+  loadingTimer = setTimeout(() => {
+    loadingMessage.value = '> WAKING_UP_QUANTITATIVE_ENGINE... [COLD_START_DETECTED: ETA_45S]'
+  }, 8000)
+
   try {
     const response = await axios.post('https://monte-carlo-portfolio-simulator.onrender.com/simulate', {
       ...payload,
@@ -25,6 +34,7 @@ const handleExecute = async (payload) => {
     console.error("API_ERROR:", error)
     step.value = 'input'
   } finally {
+    clearTimeout(loadingTimer)
     loading.value = false
   }
 }
@@ -44,7 +54,7 @@ const handleExecute = async (payload) => {
 
     <div v-if="loading" class="terminal-layout" style="align-items: center;">
       <div style="color: var(--text-white); font-size: 12px; letter-spacing: 0.5em; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">
-        > SIMULATING_OUTCOMES_IN_PARALLEL_UNIVERSES...
+        {{ loadingMessage }}
       </div>
     </div>
 
