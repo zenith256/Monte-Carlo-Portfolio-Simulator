@@ -19,7 +19,7 @@ const handleExecute = async (payload) => {
   loadingMessage.value = '> SIMULATING_OUTCOMES_IN_PARALLEL_UNIVERSES...'
   loadingTimer = setTimeout(() => {
     loadingMessage.value = '> WAKING_UP_QUANTITATIVE_ENGINE... [COLD_START_DETECTED: ETA_45S]'
-  }, 8000)
+  }, 20000)
 
   try {
     const response = await axios.post('https://monte-carlo-portfolio-simulator.onrender.com/simulate', {
