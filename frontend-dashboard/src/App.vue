@@ -63,13 +63,9 @@ const handleExecute = async (payload) => {
       
       <div 
         v-if="errorMessage" 
-        class="system-error-panel"
-        style="margin-bottom: 16px;"
+        style="font-size: 10px; display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px;"
       >
-        <div class="error-header">> ERROR: UNSUPPORTED TICKER</div>
-        <div class="error-body" style="display: flex; flex-direction: column; gap: 8px;">
-          <span style="color: var(--accent-red-dim);">> ERROR: {{ errorMessage }}</span>
-        </div>
+        <p style="color: var(--accent-red-dim); margin: 0;">! ERROR: {{ errorMessage.toUpperCase() }}</p>
       </div>
 
       <PortfolioInput 
