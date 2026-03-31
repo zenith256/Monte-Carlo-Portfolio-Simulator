@@ -14,9 +14,9 @@ const loadingMessage = ref('> SIMULATING_OUTCOMES_IN_PARALLEL_UNIVERSES...')
 let loadingTimer = null
 
 const handleExecute = async (payload) => {
+  errorMessage.value = ''
   loading.value = true
   step.value = 'loading'
-  errorMessage.value = ''
 
   loadingMessage.value = '> SIMULATING_OUTCOMES_IN_PARALLEL_UNIVERSES...'
   loadingTimer = setTimeout(() => {
@@ -33,12 +33,12 @@ const handleExecute = async (payload) => {
     resultsData.value = response.data 
     step.value = 'results'
   } catch (error) {
-    console.error("API_ERROR:", error)
+    console.log("FULL_ERROR_OBJECT:", error.response);
     step.value = 'input'
 
-    if (error.response && error.response.data && error.response.data.detail) {
+    if (error.response && error.response.data) {
       // This pulls exactly what we wrote in Python: "Unsupported ticker: 'VWRA'..."
-      errorMessage.value = error.response.data.detail 
+      errorMessage.value = error.response.data.detail || "Server rejected request";
     } else {
       errorMessage.value = "A network error occurred. Please try again."
     }
