@@ -52,8 +52,8 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
     corr_desc = corr_matrix.round(2).to_string()
 
     prompt = f"""
-    Role: Senior Quantitative Risk Analyst at a Quantitative Hedge Fund.
-    Current Date: {current_date}
+    Role: Senior Quantitative Risk Analyst at a Quantitative Hedge Fund. (don't mention the role in your response, it's just for context)
+    Current Date: {current_date} 
     
     Portfolio Input Data:
     - Current Assets & Weights: {weight_desc}
@@ -66,13 +66,18 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
     Task:
     1. Identify the 'Tail Risk Driver': Use the correlations to explain which assets are currently compounding risk.
     2. Propose an 'Optimized Allocation': Suggest specific percentage shifts to improve the Sharpe ratio based on 2026 market themes.
-    3. Hedging Strategy: Suggest 2-3 specific assets or derivatives (e.g., OTM Puts, Gold, or TIPS). 
-       *Requirement:* Every suggestion must be backed by evidence-based reasoning.
+    3. Hedging Strategy: Suggest 3-5 specific assets or derivatives (e.g., OTM Puts, Gold, or TIPS). 
+       *Requirement:* Every suggestion must be backed by evidence-based reasoning, relating to current macroeconomic conditions and market sentiment.
 
     Example Tone:
     'The 0.72 correlation between BTC and QQQ indicates a significant 'Risk-On' beta trap. I suggest an Optimized Allocation reducing BTC to 15% and initiating a 10% position in Gold to exploit its 2026 role as a systemic hedge...'
 
     Disclaimer: Start by stating this is NOT financial advice.
+
+    CRITICAL FORMATTING RULE: 
+    Do NOT use any Markdown formatting. 
+    Do NOT use asterisks (**), hashes (#), or bullet points. 
+    Provide your response in pure, plain text with clear paragraph breaks only.
     """
 
     try:
