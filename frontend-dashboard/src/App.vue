@@ -64,9 +64,12 @@ const handleExecute = async (payload) => {
       <div 
         v-if="errorMessage" 
         class="system-error-panel"
+        style="margin-bottom: 16px;"
       >
-        <div class="error-header">> UNSUPPORTED_TICKER: </div>
-        <div class="error-body">{{ errorMessage }}</div>
+        <div class="error-header">> ERROR: UNSUPPORTED TICKER</div>
+        <div class="error-body" style="display: flex; flex-direction: column; gap: 8px;">
+          <span style="color: var(--accent-red-dim);">> ERROR: {{ errorMessage }}</span>
+        </div>
       </div>
 
       <PortfolioInput 
