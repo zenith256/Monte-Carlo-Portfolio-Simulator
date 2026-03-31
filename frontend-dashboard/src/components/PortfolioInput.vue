@@ -80,7 +80,6 @@ const handleExecute = () => {
         </div>
 
         <div v-if="backendError" style="font-size: 10px; display: flex; flex-direction: column; gap: 4px;">
-          <p style="color: var(--accent-red-dim); margin: 0;">! ERROR: DATA FETCH FAILED</p>
           <p style="color: var(--accent-red-dim); margin: 0;">! ERROR: {{ backendError.toUpperCase() }}</p>
         </div>
       </footer>
