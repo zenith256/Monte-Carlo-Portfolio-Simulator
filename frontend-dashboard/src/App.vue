@@ -64,13 +64,6 @@ const handleExecute = async (payload) => {
       <PortfolioInput 
         @execute="handleExecute" 
       />
-      
-      <div 
-        v-if="errorMessage" 
-        style="font-size: 10px; display: flex; flex-direction: column; gap: 4px; margin-top: 16px;"
-      >
-        <p style="color: var(--accent-red-dim); margin: 0;">! ERROR: {{ errorMessage.toUpperCase() }}</p>
-      </div>
 
     </div>
 

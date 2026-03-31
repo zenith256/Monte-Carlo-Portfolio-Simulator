@@ -1,6 +1,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 
+const props = defineProps({
+  backendError: {
+    type: String,
+    default: ''
+  }
+})
+
 const emit = defineEmits(['execute'])
 
 const rawTickers = ref("QQQ, TLT, BTC, GLD, SPY")
@@ -70,6 +77,11 @@ const handleExecute = () => {
         <div v-if="!isValid" style="font-size: 10px; display: flex; flex-direction: column; gap: 4px;">
           <p v-if="!isSynced" style="color: var(--accent-red-dim);">! ERROR: TICKER/WEIGHT COUNT MISMATCH</p>
           <p v-if="!isOneHundred" style="color: var(--accent-red-dim);">! ERROR: TOTAL ALLOCATION MUST EQUAL 100%</p>
+        </div>
+
+        <div v-if="backendError" style="font-size: 10px; display: flex; flex-direction: column; gap: 4px;">
+          <p style="color: var(--accent-red-dim); margin: 0;">! ERROR: DATA FETCH FAILED</p>
+          <p style="color: var(--accent-red-dim); margin: 0;">! ERROR: {{ backendError.toUpperCase() }}</p>
         </div>
       </footer>
     </div>
