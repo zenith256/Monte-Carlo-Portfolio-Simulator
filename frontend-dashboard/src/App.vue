@@ -34,7 +34,6 @@ const handleExecute = async (payload) => {
     resultsData.value = response.data 
     step.value = 'results'
   } catch (error) {
-    console.log("FULL_ERROR_OBJECT:", error.response); 
     step.value = 'input';
 
     if (error.response?.data?.detail) {
@@ -46,8 +45,6 @@ const handleExecute = async (payload) => {
     else {
       errorMessage.value = error.message || "A system error occurred. Please try again.";
     }
-    console.log("EXTRACTED_MESSAGE:", errorMessage.value); 
-    
   } finally {
     clearTimeout(loadingTimer)
     loading.value = false
@@ -66,14 +63,16 @@ const handleExecute = async (payload) => {
       
       <div 
         v-if="errorMessage" 
-        style="width: 100%; max-width: 768px; margin: 20px auto 32px; padding: 16px; border: 1px solid var(--accent-red-bright); background-color: rgba(239, 68, 68, 0.1); color: var(--accent-red-bright); font-size: 13px; text-align: center; font-family: var(--font-mono); z-index: 50;"
+        class="system-error-panel"
       >
-        > ERROR: {{ errorMessage }}
+        <div class="error-header">> UNSUPPORTED_TICKER: </div>
+        <div class="error-body">{{ errorMessage }}</div>
       </div>
 
       <PortfolioInput 
         @execute="handleExecute" 
       />
+      
     </div>
 
     <div v-if="loading" class="terminal-layout" style="align-items: center;">
