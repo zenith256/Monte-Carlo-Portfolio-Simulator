@@ -33,15 +33,19 @@ const handleExecute = async (payload) => {
     resultsData.value = response.data 
     step.value = 'results'
   } catch (error) {
-    console.log("FULL_ERROR_OBJECT:", error.response);
-    step.value = 'input'
+    console.log("FULL_ERROR_OBJECT:", error.response); 
+    step.value = 'input';
 
-    if (error.response && error.response.data && error.response.data.detail) {
-      // This pulls exactly what we wrote in Python: "Unsupported ticker: 'VWRA'..."
-      errorMessage.value = error.response.data.detail || "Server rejected request";
-    } else {
-      errorMessage.value = "A network error occurred. Please try again."
+    if (error.response?.data?.detail) {
+      errorMessage.value = error.response.data.detail;
+    } 
+    else if (typeof error.response?.data === 'string') {
+      errorMessage.value = error.response.data;
     }
+    else {
+      errorMessage.value = error.message || "A system error occurred. Please try again.";
+    }
+    console.log("EXTRACTED_MESSAGE:", errorMessage.value); 
     
   } finally {
     clearTimeout(loadingTimer)
