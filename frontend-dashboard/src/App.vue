@@ -60,6 +60,10 @@ const handleExecute = async (payload) => {
     />
     
     <div v-if="step === 'input' && !loading">
+
+      <PortfolioInput 
+        @execute="handleExecute" 
+      />
       
       <div 
         v-if="errorMessage" 
@@ -68,10 +72,6 @@ const handleExecute = async (payload) => {
         <p style="color: var(--accent-red-dim); margin: 0;">! ERROR: {{ errorMessage.toUpperCase() }}</p>
       </div>
 
-      <PortfolioInput 
-        @execute="handleExecute" 
-      />
-      
     </div>
 
     <div v-if="loading" class="terminal-layout" style="align-items: center;">
