@@ -63,6 +63,7 @@ const handleExecute = async (payload) => {
 
       <PortfolioInput 
         @execute="handleExecute" 
+        :backend-error="errorMessage"
       />
 
     </div>
