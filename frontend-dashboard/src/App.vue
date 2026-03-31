@@ -8,6 +8,7 @@ import SimulationResults from './components/SimulationResults.vue'
 const step = ref('boot') 
 const resultsData = ref(null)
 const loading = ref(false)
+const errorMessage = ref('')
 
 const loadingMessage = ref('> SIMULATING_OUTCOMES_IN_PARALLEL_UNIVERSES...')
 let loadingTimer = null
@@ -15,6 +16,7 @@ let loadingTimer = null
 const handleExecute = async (payload) => {
   loading.value = true
   step.value = 'loading'
+  errorMessage.value = ''
 
   loadingMessage.value = '> SIMULATING_OUTCOMES_IN_PARALLEL_UNIVERSES...'
   loadingTimer = setTimeout(() => {
@@ -33,6 +35,14 @@ const handleExecute = async (payload) => {
   } catch (error) {
     console.error("API_ERROR:", error)
     step.value = 'input'
+
+    if (error.response && error.response.data && error.response.data.detail) {
+      // This pulls exactly what we wrote in Python: "Unsupported ticker: 'VWRA'..."
+      errorMessage.value = error.response.data.detail 
+    } else {
+      errorMessage.value = "A network error occurred. Please try again."
+    }
+    
   } finally {
     clearTimeout(loadingTimer)
     loading.value = false
@@ -51,6 +61,13 @@ const handleExecute = async (payload) => {
       v-if="step === 'input' && !loading" 
       @execute="handleExecute" 
     />
+
+    <div 
+        v-if="errorMessage" 
+        style="max-width: 768px; margin: 16px auto 0; padding: 12px; border: 1px solid var(--accent-red-dim); background-color: rgba(127, 29, 29, 0.1); color: var(--accent-red-bright); font-size: 12px; text-align: center; font-family: var(--font-mono);"
+      >
+        > ERROR: {{ errorMessage }}
+      </div>
 
     <div v-if="loading" class="terminal-layout" style="align-items: center;">
       <div style="color: var(--text-white); font-size: 12px; letter-spacing: 0.5em; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">
