@@ -57,17 +57,18 @@ const handleExecute = async (payload) => {
       @initialize="step = 'input'" 
     />
     
-    <PortfolioInput 
-      v-if="step === 'input' && !loading" 
-      @execute="handleExecute" 
-    />
+    <div v-if="step === 'input' && !loading">
+      <PortfolioInput 
+        @execute="handleExecute" 
+      />
 
-    <div 
+      <div 
         v-if="errorMessage" 
         style="max-width: 768px; margin: 16px auto 0; padding: 12px; border: 1px solid var(--accent-red-dim); background-color: rgba(127, 29, 29, 0.1); color: var(--accent-red-bright); font-size: 12px; text-align: center; font-family: var(--font-mono);"
       >
         > ERROR: {{ errorMessage }}
       </div>
+    </div>
 
     <div v-if="loading" class="terminal-layout" style="align-items: center;">
       <div style="color: var(--text-white); font-size: 12px; letter-spacing: 0.5em; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">
