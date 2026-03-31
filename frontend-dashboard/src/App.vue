@@ -10,6 +10,7 @@ const loading = ref(false)
 const step = ref('boot') 
 const resultsData = ref(null)
 
+
 const loadingMessage = ref('> SIMULATING_OUTCOMES_IN_PARALLEL_UNIVERSES...')
 let loadingTimer = null
 
@@ -62,17 +63,17 @@ const handleExecute = async (payload) => {
     />
     
     <div v-if="step === 'input' && !loading">
+      
+      <div 
+        v-if="errorMessage" 
+        style="width: 100%; max-width: 768px; margin: 20px auto 32px; padding: 16px; border: 1px solid var(--accent-red-bright); background-color: rgba(239, 68, 68, 0.1); color: var(--accent-red-bright); font-size: 13px; text-align: center; font-family: var(--font-mono); z-index: 50;"
+      >
+        > ERROR: {{ errorMessage }}
+      </div>
+
       <PortfolioInput 
         @execute="handleExecute" 
       />
-
-          <div 
-        v-if="errorMessage" 
-        :key="errorMessage"
-        style="width: 100%; max-width: 768px; margin: 20px auto; padding: 16px; border: 2px solid #ef4444; background-color: rgba(239, 68, 68, 0.15); color: #ef4444; font-size: 13px; text-align: center; font-family: 'JetBrains Mono', monospace; box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); position: relative; z-index: 9999;"
-      >
-        > [SYSTEM_FAILURE]: {{ errorMessage }}
-      </div>
     </div>
 
     <div v-if="loading" class="terminal-layout" style="align-items: center;">
