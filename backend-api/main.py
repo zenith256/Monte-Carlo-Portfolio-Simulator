@@ -52,7 +52,7 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
     corr_desc = corr_matrix.round(2).to_string()
 
     prompt = f"""
-    Role: Senior Quantitative Risk Analyst at a Quantitative Hedge Fund. (don't mention the role in your response, it's just for context)
+    Role: Chief Risk Officer at an Institutional Quant Fund. (Do not mention your role in the output).
     Current Date: {current_date} 
     
     Portfolio Input Data:
@@ -63,21 +63,24 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
     - Correlation Matrix:
     {corr_desc}
 
-    Task:
-    1. Identify the 'Tail Risk Driver': Use the correlations to explain which assets are currently compounding risk.
-    2. Propose an 'Optimized Allocation': Suggest specific percentage shifts to improve the Sharpe ratio based on 2026 market themes.
-    3. Hedging Strategy: Suggest 3-5 specific assets or derivatives (e.g., OTM Puts, Gold, or TIPS). 
-       *Requirement:* Every suggestion must be backed by evidence-based reasoning, relating to current macroeconomic conditions and market sentiment.
-
-    Example Tone:
-    'The 0.72 correlation between BTC and QQQ indicates a significant 'Risk-On' beta trap. I suggest an Optimized Allocation reducing BTC to 15% and initiating a 10% position in Gold to exploit its 2026 role as a systemic hedge...'
-
-    Disclaimer: Start by stating this is NOT financial advice.
-
+    Task: Generate an authoritative, evidence-based risk report designed to convince a skeptical portfolio manager. Your analysis MUST reflect the actual global macroeconomic environment, interest rate regimes, and market sentiment as of {current_date}.
+    
     CRITICAL FORMATTING RULE: 
-    Do NOT use any Markdown formatting. 
-    Do NOT use asterisks (**), hashes (#), or bullet points. 
-    Provide your response in pure, plain text with clear paragraph breaks only.
+    You MUST structure your response exactly using the ALL-CAPS section headers below. 
+    Provide plain text with clear paragraph breaks and bullet points if need to enhance readability, but do NOT use any markdown syntax. The output should be a professional report, not a casual explanation.
+
+    [ DISCLAIMER ]
+    Start by stating this is not financial advice.
+
+    [ SECTION 1: MACRO-DRIVEN TAIL RISK ]
+    Analyze the Correlation Matrix. Identify specific asset pairings that are secretly compounding downside risk. Crucially, explain the CURRENT macroeconomic reality (e.g., inflation trends, central bank policy, sector rotations) that is driving this correlation. Use an empirical tone to explain why this represents a systemic vulnerability in the current market environment.
+
+    [ SECTION 2: EVIDENCE-BASED ALLOCATION & SHORTING STRATEGY ]
+    Propose precise percentage weight shifts to improve the Sharpe ratio. 
+    Requirement: You MUST suggest at least one specific SHORT position (assigning a negative weight) to isolate alpha or hedge against the portfolio's primary beta exposure. Justify this short by citing current structural weaknesses, overvaluations, or statistical drag in today's economy. Persuade the reader with cold logic.
+
+    [ SECTION 3: PRECISION HEDGING TACTICS ]
+    Suggest 3-4 highly specific institutional hedging structures (e.g., 3-month 25-delta OTM Puts on specific indices, specific duration Treasuries, or volatility derivatives). For every hedge, provide the exact 'Why'. Explain the mathematical mechanism of the hedge and how it explicitly counters the vulnerabilities identified in Section 1 based on the {current_date} macro landscape.
     """
 
     try:

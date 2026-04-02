@@ -40,7 +40,7 @@ const handleExecute = () => {
       
       <header>
         <h1 class="text-header-lg">Simulation_Inputs</h1>
-        <p style="font-size: 10px; color: var(--text-dark); margin-top: 4px;">AWAITING_PORTFOLIO_CONFIGURATION_</p>
+        <p style="font-size: 10px; color: var(--text-dark); margin-top: 4px;">AWAITING_PORTFOLIO_CONFIGURATION</p>
       </header>
 
       <section style="display: flex; flex-direction: column; gap: 8px;">
