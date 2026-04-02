@@ -8,6 +8,7 @@ This project originated as a personal Python script used to evaluate my own port
 I built this web app to bridge that gap. It democratizes institutional-grade risk modeling, allowing anyone to run a 10,000-path Monte Carlo simulation on custom portfolios. To make the math actionable, it integrates an LLM to translate dense statistical outputs into readable, strategic takeaways.
 
 ## 02 Features & Use Cases
+* **Long/Short Strategy Support:** Natively supports modeling short positions via negative weight assignments (e.g., entering -0.5 represents a 50% short exposure).
 * **Dynamic Tail-Risk Analysis:** Move beyond simple expected returns to calculate metrics like the 95% Value-at-Risk (VaR) and Expected Shortfall (CVaR).
 * **Allocation Optimization:** Adjust position weights to objectively evaluate how different setups impact your overall risk profile before making live trades.
 * **Strategic Hedging:** Simulate the introduction of inversely correlated assets to see if they genuinely provide a cushion against systemic market shocks.

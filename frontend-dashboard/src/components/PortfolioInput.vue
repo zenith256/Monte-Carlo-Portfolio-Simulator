@@ -56,7 +56,7 @@ const handleExecute = () => {
         <h2 class="text-label-xs" style="color: var(--text-white);">02 Weights</h2>
         <input class="input-field" v-model="rawWeights" placeholder="EX: 0.5, 0.2, 0.3" />
         <div style="display: flex; justify-content: space-between; font-size: 10px;">
-          <span style="color: var(--text-dark);">FORMAT: DECIMAL_SUM_TO_1.0</span>
+          <span style="color: var(--text-dark);">FORMAT: DECIMAL_SUM_TO_1.0 (NEGATIVES ALLOWED FOR SHORTING)</span>
           <span :style="{ color: isOneHundred ? 'var(--text-dim)' : 'var(--accent-red-dim)' }">SUM: {{ (totalWeight * 100).toFixed(1) }}%</span>
         </div>
       </section>
