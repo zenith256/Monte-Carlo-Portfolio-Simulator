@@ -177,6 +177,9 @@ async def simulate(req: SimulationRequest):
         portfolio_paths = np.tensordot(prices, weights, axes=([1], [0]))
         del prices
 
+        # Margin Call Failsafe: If any path's value drops to <= 0, set it to a tiny positive number to represent total loss and prevent math errors.
+        portfolio_paths = np.maximum(portfolio_paths, 1e-6)
+
         # Analytics
         final_values = portfolio_paths[-1, :]
         portfolio_returns = final_values - 1.0
