@@ -67,7 +67,7 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
     
     CRITICAL FORMATTING RULE: 
     You MUST structure your response exactly using the ALL-CAPS section headers below. 
-    Provide plain text with clear paragraph breaks and bullet points if need to enhance readability, but do NOT use any markdown syntax. The output should be a professional report, not a casual explanation.
+    Provide plain text with clear paragraph breaks and bullet points if need to enhance readability, but do NOT use any markdown syntax(e.g., **bold**, *italic*) The output should be a professional report, not a casual explanation.
 
     [ DISCLAIMER ]
     Start by stating this is not financial advice.
