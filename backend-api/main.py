@@ -65,10 +65,12 @@ def get_ai_analysis(metrics, tickers, weights, corr_matrix):
 
     Task: Generate an authoritative, evidence-based risk report designed to convince a skeptical portfolio manager. Your analysis MUST reflect the actual global macroeconomic environment, interest rate regimes, and market sentiment as of {current_date}.
     
-    CRITICAL FORMATTING RULE: 
-    You MUST structure your response exactly using the ALL-CAPS section headers below. 
-    Provide plain text with clear paragraph breaks and bullet points if need to enhance readability, but do NOT use any markdown syntax(e.g., **bold**, *italic*) The output should be a professional report, not a casual explanation.
-
+    CRITICAL FORMATTING RULE - RAW PLAIN TEXT ONLY:
+    You are strictly forbidden from using any Markdown formatting. 
+    - Absolutely NO asterisks (*) or underscores (_) for bolding or italics.
+    - Absolutely NO hashes (#) for headers.
+    To emphasize a sub-header, use ALL CAPS. To create a list, use standard dashes (-). Structure the output as a professional, institutional risk report relying entirely on paragraph spacing and capitalization for readability.
+    
     [ DISCLAIMER ]
     Start by stating this is not financial advice.
 
